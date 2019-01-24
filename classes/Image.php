@@ -28,7 +28,7 @@ class Image
     protected $options;
 
     /**
-     * Thumb filename 
+     * Thumb filename
      */
     protected $thumbFilename;
 
@@ -178,7 +178,7 @@ class Image
     protected function diskName()
     {
         $diskName = $this->filePath;
-        
+
         // Ensures a unique filepath when tinypng compression is enabled
         if ($this->isCompressionEnabled()) {
             $diskName .= 'tinypng';
@@ -273,7 +273,7 @@ class Image
     {
         $width = (integer) $width;
         $height = (integer) $height;
-        
+
         return 'thumb__' . $width . '_' . $height . '_' . $this->options['offset'][0] . '_' . $this->options['offset'][1] . '_' . $this->options['mode'] . '.' . $this->options['extension'];
     }
 
