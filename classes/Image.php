@@ -92,6 +92,10 @@ class Image
             if ($this->isCompressionEnabled()) {
                 $this->compressWithTinyPng();
             }
+
+            // Touch the cached image with the original file mime time, so
+            // it get cached correctly.
+            touch($this->getCachedImagePath(), filemtime($this->filePath));
         }
 
         // Return the URL
@@ -236,12 +240,28 @@ class Image
     }
 
     /**
-     * Checks if the requested resize/compressed image is already cached
+     * Checks if the requested resize/compressed image is already cached.
+     * Removes the cached image if the original image is newer.
+     *
      * @return bool
      */
     protected function isImageCached()
     {
-        return is_file($this->getCachedImagePath());
+        // if there is no cached image return false
+        if (!is_file($cached_img = $this->getCachedImagePath())) {
+            return false;
+        }
+
+        // if cached image is newer than source file, the image is already cached
+        if (filemtime($this->filePath) === filemtime($cached_img)) {
+            return true;
+        }
+
+        // delete older cached file
+        unlink($cached_img);
+
+        // generate new cache file
+        return false;
     }
 
     /**
